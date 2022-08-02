@@ -27,7 +27,9 @@ class AuthManager:
             return BadRequest("Invalid Token")
 
 
-
 auth = HTTPTokenAuth()
 
-
+@auth.verify_token
+def verify(token):
+    user_id = AuthManager.decode_token(token)
+    return UserModel.query.filter_by(id=user_id).first

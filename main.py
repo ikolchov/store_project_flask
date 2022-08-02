@@ -12,7 +12,7 @@ api = Api(app)
 migrate = Migrate(app, db)
 app.config.from_object(config("config_credentials"))
 
-[api.add_resource(*route_date) for route_date in routes]
+[api.add_resource(*route_data) for route_data in routes]
 
 @app.after_request
 def return_response(resp):
