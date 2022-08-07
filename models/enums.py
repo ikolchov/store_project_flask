@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class ProductGroup(Enum):
+class ProductGroups(Enum):
     luminaire = "luminaire"
     power_tool = "power tool"
     garden_tool = "garden tool"

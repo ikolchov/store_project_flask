@@ -6,7 +6,7 @@ from flask_httpauth import HTTPTokenAuth
 from jwt import ExpiredSignatureError, InvalidTokenError
 from werkzeug.exceptions import BadRequest
 
-from models import UserModel
+from models import UserModel, EmployeeModel
 
 
 class AuthManager:
@@ -29,7 +29,9 @@ class AuthManager:
 
 auth = HTTPTokenAuth()
 
+
 @auth.verify_token
 def verify(token):
     user_id = AuthManager.decode_token(token)
-    return UserModel.query.filter_by(id=user_id).first
+    return EmployeeModel.query.filter_by(id=user_id).first()
+

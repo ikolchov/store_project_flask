@@ -15,6 +15,7 @@ def get_password_strength(value):
     check_policy = policy.test(value)
     return stats, check_policy
 
+
 def get_user_name(first, last):
     user_name = f"{first[:3]}{last[:3]}"
     counter = 1
@@ -26,3 +27,5 @@ def get_user_name(first, last):
         elif not user_exists:
             break
     return user_name
+
+

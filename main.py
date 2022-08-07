@@ -1,23 +1,23 @@
 from decouple import config
 from flask import Flask
+from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_restful import Api
 
+from config import create_app
 from db import db
+from mail import mail
+
 from resources.routes import routes
 
-app = Flask(__name__)
-db.init_app(app)
-api = Api(app)
-migrate = Migrate(app, db)
-app.config.from_object(config("config_credentials"))
+app = create_app()
 
-[api.add_resource(*route_data) for route_data in routes]
 
 @app.after_request
 def return_response(resp):
     db.session.commit()
     return resp
+
 
 if __name__ == "__main__":
     app.run()
