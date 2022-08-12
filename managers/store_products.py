@@ -1,5 +1,5 @@
 from db import db
-from models import ProductsModel
+from models import ProductsModel, ProductStatus
 
 
 class StoreProductManager:
@@ -14,7 +14,8 @@ class StoreProductManager:
 
     @staticmethod
     def get_product(product):
-        pass
+        return ProductsModel.query.filter_by(status=product["status"]).all()
+
 
     @staticmethod
     def update(product):
@@ -22,4 +23,9 @@ class StoreProductManager:
 
     @staticmethod
     def remove_product(product):
-        pass
+        item = ProductsModel.query.filter_by(**product).first()
+        if not item:
+            raise ValueError("item does not exist")
+        item.status = ProductStatus.delete
+        db.session.commit()
+        return item.id

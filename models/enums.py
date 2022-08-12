@@ -1,7 +1,8 @@
+import enum
 from enum import Enum
 
 
-class ProductGroups(Enum):
+class ProductGroups(enum.Enum):
     luminaire = "luminaire"
     power_tool = "power tool"
     garden_tool = "garden tool"
