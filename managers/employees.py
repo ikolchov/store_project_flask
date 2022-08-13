@@ -47,7 +47,6 @@ class EmployeeManager:
             raise BadRequest("Invalid username!")
         data["user_groups"] = pgs.id
         emp_pgs = EmployeeProductGroups(**data)
-
         db.session.add(emp_pgs)
         db.session.commit()
         return f"PG {pgs.groups} successfully added for user {employee.username}"

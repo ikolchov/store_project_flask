@@ -1,12 +1,15 @@
+from flask import jsonify
+
 from db import db
 from models import ProductsModel, ProductStatus
+from utils.func_helpers import get_new_values
 
 
 class StoreProductManager:
 
     @staticmethod
     def create_product(product):
-        product["modified_by"] = 1
+
         data = ProductsModel(**product)
         db.session.add(data)
         db.session.commit()
@@ -14,18 +17,22 @@ class StoreProductManager:
 
     @staticmethod
     def get_product(product):
-        return ProductsModel.query.filter_by(status=product["status"]).all()
-
+        return ProductsModel.query.filter_by(**product).all()
 
     @staticmethod
     def update(product):
-        pass
+        new_value = product.pop("new_value")
+        items = ProductsModel.query.filter_by(**product).all()
+        changed = get_new_values(items, new_value)
+        return "asd"
 
     @staticmethod
     def remove_product(product):
-        item = ProductsModel.query.filter_by(**product).first()
-        if not item:
+        items = ProductsModel.query.filter_by(**product).all()
+        if not items:
             raise ValueError("item does not exist")
-        item.status = ProductStatus.delete
+        for item in items:
+
+            item.status = ProductStatus.delete
         db.session.commit()
-        return item.id
+        return items

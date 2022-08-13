@@ -1,6 +1,7 @@
 from password_strength import PasswordPolicy, PasswordStats
+from werkzeug.exceptions import Forbidden
 
-from models import EmployeeModel
+from models import EmployeeModel, EmployeeProductGroups, GroupModel
 
 
 def get_password_strength(value):
@@ -29,3 +30,17 @@ def get_user_name(first, last):
     return user_name
 
 
+def get_new_values(items, new_value):
+
+    for item in items:
+        for k, v in new_value.items():
+            setattr(item, k, v)
+
+
+def check_permissions(pg, user):
+
+    emp_pg = GroupModel.query.filter_by(groups=pg["product_group"]).first()
+    perm = EmployeeProductGroups.query.filter_by(username=user.username, user_groups=emp_pg.id).first()
+    if not perm:
+        raise Forbidden("you don`t have permissions")
+    return True

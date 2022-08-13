@@ -6,13 +6,13 @@ from managers.employees import EmployeeManager
 from models import EmployeeRoles
 
 from schemas.request.auth_employee import EmployeeRegisterSchema, EmployeeLoginSchema, EmployeeGroups
-from utils.decorators import validate_schema, permision_required
+from utils.decorators import validate_schema, permission_required
 
 
 class EmployeeRegisterResource(Resource):
 
     @auth.login_required
-    @permision_required(EmployeeRoles.manager)
+    @permission_required(EmployeeRoles.manager)
     @validate_schema(EmployeeRegisterSchema)
     def post(self):
         employee_data = request.get_json()
@@ -20,7 +20,7 @@ class EmployeeRegisterResource(Resource):
         return resp
 
     @auth.login_required
-    @permision_required(EmployeeRoles.manager)
+    @permission_required(EmployeeRoles.manager)
     @validate_schema(EmployeeGroups)
     def put(self):
         data = request.get_json()
