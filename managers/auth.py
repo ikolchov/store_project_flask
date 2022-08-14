@@ -12,15 +12,14 @@ from models import UserModel, EmployeeModel
 class AuthManager:
     @staticmethod
     def encode_token(user):
-        payload = {"sub": user.id, "exp": datetime.utcnow() + timedelta(days=2)}
+        payload = {"sub": user.id, "exp": datetime.utcnow() + timedelta(days=2), "type": user.__class__.__name__}
         return jwt.encode(payload, key=config("JWT_SECRET"), algorithm="HS256")
-
 
     @staticmethod
     def decode_token(token):
         try:
             payload = jwt.decode(token, key=config('JWT_SECRET'), algorithms=['HS256'])
-            return payload['sub']
+            return payload['sub'], payload["type"]
         except ExpiredSignatureError:
             return BadRequest("token exp")
         except InvalidTokenError:
@@ -32,6 +31,8 @@ auth = HTTPTokenAuth()
 
 @auth.verify_token
 def verify(token):
-    user_id = AuthManager.decode_token(token)
-    return EmployeeModel.query.filter_by(id=user_id).first()
-
+    user_id, user_type = AuthManager.decode_token(token)
+    if user_type == "EmployeeModel":
+        return EmployeeModel.query.filter_by(id=user_id).first()
+    elif user_type == "UserModel":
+        return UserModel.query.filter_by(id=user_id).first()

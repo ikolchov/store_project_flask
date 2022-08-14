@@ -3,16 +3,18 @@ from flask_restful import Resource
 
 from managers.auth import auth
 from managers.store_products import StoreProductManager
-from models import ProductStatus
+from models import ProductStatus, EmployeeRoles
 from schemas.request.store_product import ProductCreateSchema, ProductGetSchema, ProductUpdateSchema, \
     ProductDeleteSchema
 from schemas.response.store_products import ProductReturnResponseSchema, ProductDeleteResponseSchema
-from utils.decorators import validate_schema
+from utils.decorators import validate_schema, permission_required
 from utils.func_helpers import check_permissions
 
 
 class StoreProductResource(Resource):
+
     @auth.login_required
+    @permission_required([EmployeeRoles.manager, EmployeeRoles.owner, EmployeeRoles.senior, EmployeeRoles.worker])
     @validate_schema(ProductCreateSchema)
     def put(self):
         data = request.get_json()
@@ -24,6 +26,7 @@ class StoreProductResource(Resource):
         return resp, 201
 
     @auth.login_required
+    @permission_required([EmployeeRoles.manager, EmployeeRoles.owner, EmployeeRoles.senior, EmployeeRoles.worker])
     @validate_schema(ProductGetSchema)
     def get(self):
         data = request.get_json()
@@ -33,17 +36,24 @@ class StoreProductResource(Resource):
         return ProductReturnResponseSchema().dump(items, many=True), 201
 
     @auth.login_required
+    @permission_required([EmployeeRoles.manager, EmployeeRoles.owner, EmployeeRoles.senior, EmployeeRoles.worker])
     @validate_schema(ProductDeleteSchema)
     def delete(self):
         data = request.get_json()
+        employee = auth.current_user()
+        check_permissions(data, employee)
         data["status"] = "active"
-        items = StoreProductManager.remove_product(data)
+        items = StoreProductManager.remove_product(data, employee)
+
         return ProductDeleteResponseSchema().dump(items, many=True), 201
 
     @auth.login_required
+    @permission_required([EmployeeRoles.manager, EmployeeRoles.owner, EmployeeRoles.senior, EmployeeRoles.worker])
     @validate_schema(ProductUpdateSchema)
     def patch(self):
         data = request.get_json()
+        employee = auth.current_user()
         StoreProductManager.update(data)
+        check_permissions(data, employee)
         return "successfully modified", 201
 

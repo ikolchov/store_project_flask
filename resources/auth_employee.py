@@ -12,7 +12,7 @@ from utils.decorators import validate_schema, permission_required
 class EmployeeRegisterResource(Resource):
 
     @auth.login_required
-    @permission_required(EmployeeRoles.manager)
+    @permission_required([EmployeeRoles.manager, EmployeeRoles.owner])
     @validate_schema(EmployeeRegisterSchema)
     def post(self):
         employee_data = request.get_json()
@@ -20,11 +20,10 @@ class EmployeeRegisterResource(Resource):
         return resp
 
     @auth.login_required
-    @permission_required(EmployeeRoles.manager)
+    @permission_required([EmployeeRoles.manager, EmployeeRoles.owner, EmployeeRoles.senior])
     @validate_schema(EmployeeGroups)
     def put(self):
         data = request.get_json()
-
         resp = EmployeeManager.update_user_groups(data)
         return resp
 

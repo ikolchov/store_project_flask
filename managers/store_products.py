@@ -1,7 +1,7 @@
 from flask import jsonify
 
 from db import db
-from models import ProductsModel, ProductStatus
+from models import ProductsModel, ProductStatus, EmployeeRoles
 from utils.func_helpers import get_new_values
 
 
@@ -27,12 +27,18 @@ class StoreProductManager:
         return "asd"
 
     @staticmethod
-    def remove_product(product):
+    def remove_product(product, employee):
         items = ProductsModel.query.filter_by(**product).all()
         if not items:
             raise ValueError("item does not exist")
-        for item in items:
-
-            item.status = ProductStatus.delete
+        # soft delete by regular employee
+        if employee.user_role in [EmployeeRoles.worker, EmployeeRoles.senior]:
+            for item in items:
+                item.status = ProductStatus.delete
+                item.modified_by = employee.id
+        # hard delete for users with more rights
+        elif employee.user_role in [EmployeeRoles.manager, EmployeeRoles.owner]:
+            for item in items:
+                db.session.delete(item)
         db.session.commit()
         return items
