@@ -5,7 +5,7 @@ from db import db
 
 app = create_app()
 print(app.config)
-
+#asd
 
 @app.after_request
 def return_response(resp):

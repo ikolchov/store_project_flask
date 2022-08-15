@@ -2,7 +2,7 @@ from resources.auth_employee import EmployeeRegisterResource, EmployeeLoginResou
 from resources.auth_user import RegisterResource, LoginResource
 from resources.change_password import ChangePasswordResource
 from resources.store_products import StoreProductResource
-from resources.tester import SendMail
+#from resources.tester import SendMail
 
 routes = (
     (RegisterResource, '/register/'),
@@ -12,7 +12,7 @@ routes = (
     (ChangePasswordResource, '/change_password/'),
     (StoreProductResource, '/store_data_platform/'),
     #exporter
-    (SendMail, '/mail/')
+   # (SendMail, '/mail/')
 
 
 )
