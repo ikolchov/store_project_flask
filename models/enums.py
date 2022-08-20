@@ -21,3 +21,4 @@ class EmployeeRoles(Enum):
     manager = "manager"
     senior = "senior worker"
     worker = "worker"
+

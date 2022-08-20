@@ -36,3 +36,15 @@ def permission_required(roles: List[EmployeeRoles]):
 
 
 
+def user_required():
+    def decorated_func(func):
+        def wrapper(*args, **kwargs):
+            current_user = auth.current_user()
+            if not current_user.__class__.__name__ == "UserModel":
+                raise Forbidden("You are employee this is not available for you!")
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return decorated_func
+

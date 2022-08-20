@@ -21,7 +21,7 @@ from resources.routes import routes
 
 
 class DevelopmentConfig:
-    ENV = "development"
+    FLASK_ENV = "development"
     DEBUG = True
     TESTING = True
     SQLALCHEMY_DATABASE_URI = (

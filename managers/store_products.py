@@ -1,4 +1,5 @@
 from flask import jsonify
+from werkzeug.exceptions import BadRequest
 
 from db import db
 from models import ProductsModel, ProductStatus, EmployeeRoles
@@ -30,7 +31,7 @@ class StoreProductManager:
     def remove_product(product, employee):
         items = ProductsModel.query.filter_by(**product).all()
         if not items:
-            raise ValueError("item does not exist")
+            raise BadRequest("item does not exist")
         # soft delete by regular employee
         if employee.user_role in [EmployeeRoles.worker, EmployeeRoles.senior]:
             for item in items:
