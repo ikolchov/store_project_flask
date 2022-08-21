@@ -1,7 +1,10 @@
-from marshmallow import Schema, fields, validates, validate
-from marshmallow_enum import EnumField
+from datetime import datetime
 
-from models import ProductGroups, ProductStatus
+from marshmallow import Schema, fields, validates, validate, validates_schema
+from marshmallow_enum import EnumField
+from werkzeug.exceptions import BadRequest
+
+from models import ProductGroups, ProductStatus, ProductsModel, ProductDetailsModel
 
 
 class ProductCreateSchema(Schema):
@@ -10,6 +13,7 @@ class ProductCreateSchema(Schema):
     model = fields.String(required=True, validate=validate.Length(min=1, max=100))
     description = fields.String(required=True)
     sku = fields.String(required=True)
+    price = fields.Float(required=True)
 
 
 class ProductGetSchema(Schema):
@@ -38,4 +42,35 @@ class ProductUpdateSchema(Schema):
         values_to_modify = ["brand", "model", "description", "sku", "review"]
         if not all(k in values_to_modify for k in value.keys()):
             raise ValueError("invalid values to modify")
+
+
+class ProductPriceSchema(Schema):
+    item_id = fields.Integer(required=True)
+    discount = fields.Float()
+    discount_start_date = fields.Date()
+    discount_end_date = fields.Date()
+
+    @validates_schema
+    def validate_start_end(self, data, **kwargs):
+        if data['discount_start_date'] >= data["discount_end_date"]:
+            raise BadRequest('check start-end date')
+
+    @validates('item_id')
+    def validates_item_is_active(self, value):
+        item = ProductsModel.query.filter_by(id=value).first()
+        if not item:
+            raise BadRequest('item does not exist!')
+        if not item.status == ProductStatus.active:
+            raise BadRequest('item is not active please check again!')
+
+    @validates('discount')
+    def validate_discount(self, value):
+        if not 0 <= value < 100:
+            raise BadRequest("discount needs to be between 0% and 100%")
+
+    @validates('discount_end_date')
+    def validate_discount_end_date(self, value):
+        cur_date = datetime.now().date()
+        if value < cur_date:
+            raise BadRequest(f'invalid time stamp current date is {cur_date}')
 

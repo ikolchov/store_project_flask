@@ -12,16 +12,15 @@ class ProductReviewManager:
         item = ProductsModel.query.filter_by(id=id).first()
         review = ProductReviewsModel(**data)
         item.reviews.append(review)
-        db.session.add(item)
         db.session.flush()
-
         return review
 
     @staticmethod
-    def get_top_comments(id):
+    def get_top_comments(id, count):
         reviews = ProductReviewsModel.query.filter_by(item=id).\
             order_by(ProductReviewsModel.rating.desc()).\
             order_by(ProductReviewsModel.created_on.desc()).\
-            limit(5).all()
+            limit(count).all()
         return reviews
+
 

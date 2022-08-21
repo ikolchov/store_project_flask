@@ -1,5 +1,6 @@
 from db import db
 from sqlalchemy import func
+from models.products import ProductsModel
 
 
 class UserModel(db.Model):
@@ -14,9 +15,13 @@ class UserModel(db.Model):
     created_on = db.Column(db.DateTime, nullable=False, server_default=func.now())
 
 
-user_product = db.Table(
-    "user_products",
-    db.Model.metadata,
-    db.Column("user_id", db.Integer, db.ForeignKey("users.id")),
-    db.Column("product_id", db.Integer, db.ForeignKey("products.id"))
-)
+class UserProductsLogger(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    item_id = db.Column(db.Integer, db.ForeignKey(ProductsModel.id), nullable=False)
+    order_create_date = db.Column(db.Date, nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    qty = db.Column(db.Integer, nullable=False)
+    discount = db.Column(db.Float, default=0, nullable=False)
+

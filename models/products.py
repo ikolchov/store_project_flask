@@ -10,8 +10,6 @@ product_reviews_relation_table = db.Table(
 )
 
 
-
-
 class ProductsModel(db.Model):
     __tablename__ = "products"
 
@@ -20,7 +18,8 @@ class ProductsModel(db.Model):
     brand = db.Column(db.String(20), nullable=False)
     model = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    sku = db.Column(db.Integer, nullable = False)  # try change
+    price = db.Column(db.Float, nullable=False)
+    sku = db.Column(db.Integer, nullable=False)
     status = db.Column(db.Enum(ProductStatus), nullable=False, default=ProductStatus.active)
     created_on = db.Column(db.DateTime, nullable=False, server_default=func.now())
     modified_on = db.Column(db.DateTime, onupdate=func.now())
@@ -31,14 +30,11 @@ class ProductsModel(db.Model):
 class ProductDetailsModel(db.Model):
     __tablename__ = "product_details"
 
-    id = db.Column(db.Integer, primary_key=True) #change id with sku?
-
-    price = db.Column(db.Float, nullable=False)
-    stock = db.Column(db.Integer, nullable=False)
-    discount = db.Column(db.Float, nullable=False)
-    discount_end_date = db.Column(db.DateTime, nullable=False)  # add some req
-
-
+    id = db.Column(db.Integer, primary_key=True)
+    item_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    discount = db.Column(db.Float, default=0)
+    discount_start_date = db.Column(db.Date, server_default=func.now())
+    discount_end_date = db.Column(db.Date, db.Constraint('discount_end_date'>discount_start_date))  # add some req
 
 
 class ProductReviewsModel(db.Model):
@@ -50,7 +46,3 @@ class ProductReviewsModel(db.Model):
     review = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Integer, default=0)
     created_on = db.Column(db.DateTime, nullable=False, server_default=func.now())
-
-
-
-

@@ -1,8 +1,10 @@
+from datetime import datetime
+
 from flask import jsonify
 from werkzeug.exceptions import BadRequest
 
 from db import db
-from models import ProductsModel, ProductStatus, EmployeeRoles
+from models import ProductsModel, ProductStatus, EmployeeRoles, ProductDetailsModel
 from utils.func_helpers import get_new_values
 
 
@@ -43,3 +45,19 @@ class StoreProductManager:
                 db.session.delete(item)
         db.session.commit()
         return items
+
+
+class ProductPriceManager:
+    @staticmethod
+    def add_prices(item):
+
+        data = ProductDetailsModel(**item)
+        db.session.add(data)
+        db.session.commit()
+        return data
+
+    @staticmethod
+    def get_discounts():
+        date = datetime.now().date()
+        discount_items = ProductDetailsModel.query.filter(ProductDetailsModel.discount_end_date>date).all()
+        return discount_items

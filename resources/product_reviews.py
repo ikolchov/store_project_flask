@@ -3,7 +3,7 @@ from flask_restful import Resource
 
 from managers.auth import auth
 from managers.product_reviews import ProductReviewManager
-from schemas.request.product_reviews import ProductReviewSchema
+from schemas.request.product_reviews import ProductReviewSchema, ProductReviewResults
 from schemas.response.product_reviews import ProductReviewResponseSchema
 from utils.decorators import validate_schema, user_required
 
@@ -19,10 +19,12 @@ class ProductReviewResource(Resource):
 
         return ProductReviewResponseSchema().dump(review), 201
 
+    @validate_schema(ProductReviewResults)
     @auth.login_required
     @user_required()
     def get(self, id):
-        resp = ProductReviewManager.get_top_comments(id)
+        data = request.get_json()
+        resp = ProductReviewManager.get_top_comments(id, data["top"])
         return ProductReviewResponseSchema().dump(resp, many=True)
 
 

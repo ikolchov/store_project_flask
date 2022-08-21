@@ -2,11 +2,12 @@ from flask import request
 from flask_restful import Resource
 
 from managers.auth import auth
-from managers.store_products import StoreProductManager
+from managers.store_products import StoreProductManager, ProductPriceManager
 from models import ProductStatus, EmployeeRoles
 from schemas.request.store_product import ProductCreateSchema, ProductGetSchema, ProductUpdateSchema, \
-    ProductDeleteSchema
-from schemas.response.store_products import ProductReturnResponseSchema, ProductDeleteResponseSchema
+    ProductDeleteSchema, ProductPriceSchema
+from schemas.response.store_products import ProductReturnResponseSchema, ProductDeleteResponseSchema, \
+    ProductDiscountResponseSchema
 from utils.decorators import validate_schema, permission_required
 from utils.func_helpers import check_permissions
 
@@ -57,3 +58,15 @@ class StoreProductResource(Resource):
         check_permissions(data, employee)
         return "successfully modified", 201
 
+
+class StorePriceResource(Resource):
+
+    @validate_schema(ProductPriceSchema)
+    def put(self):
+        data = request.get_json()
+        item = ProductPriceManager.add_prices(data)
+        return ProductDiscountResponseSchema().dump(item)
+
+    def get(self):
+        items = ProductPriceManager.get_discounts()
+        return ProductDiscountResponseSchema().dump(items, many=True)
