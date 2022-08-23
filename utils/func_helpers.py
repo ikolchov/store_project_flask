@@ -1,4 +1,6 @@
+import datetime
 import secrets
+import uuid
 
 from decouple import config
 from flask_mail import Message
@@ -72,3 +74,16 @@ def get_user(data):
     if not user:
         raise NotFound("Username not found!")
     return user
+
+
+def get_filename_generator(data):
+
+    for k, v in data.items():
+        data[k] = datetime.datetime.strptime(v, '%Y-%m-%d').strftime('%Y%m%d')
+    data['unique_ext'] = uuid.uuid4()
+
+    file_name = f"{data['start_date']}_{data['end_date']}_{data['unique_ext']}.xlsx"
+    temp_dir = r'.\service_dropbox\temp_file_dir' + file_name
+    return file_name, temp_dir
+
+

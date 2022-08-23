@@ -35,7 +35,7 @@ class PurchaseProductManager:
         db.session.flush()
 
 
-        return data
+        return "asd"
 
 
 
