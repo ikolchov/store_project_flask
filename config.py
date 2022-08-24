@@ -36,6 +36,25 @@ class DevelopmentConfig:
     MAIL_USE_SSL = False
 
 
+class TestConfig:
+    FLASK_ENV = "TEST"
+    DEBUG = True
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = (
+        f"postgresql://{config('TEST_DB_USER')}:{config('TEST_DB_PASSWORD')}"
+        f"@localhost:{config('TEST_DB_PORT')}/{config('TEST_DB_NAME')}"
+    )
+    MAIL_SERVER = f"{config('MAIL_SERVER')}"
+    MAIL_PORT = 2525
+    MAIL_USERNAME = f"{config('MAIL_USERNAME')}"
+    MAIL_PASSWORD = f"{config('MAIL_PASSWORD')}"
+    MAIL_USE_TLS = True
+    MAIL_USE_SSL = False
+
+
+
+
+
 def create_app(config="config.DevelopmentConfig"):
     app = Flask(__name__)
     db.init_app(app)

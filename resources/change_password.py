@@ -16,3 +16,4 @@ class ChangePasswordResource(Resource):
     def get(self):
         data = request.get_json()
         PasswordManager.reset_password(data)
+        #TODO fix

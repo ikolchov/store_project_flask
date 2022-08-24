@@ -49,8 +49,7 @@ class StoreProductManager:
 
 class ProductPriceManager:
     @staticmethod
-    def add_prices(item):
-
+    def create_discount(item):
         data = ProductDetailsModel(**item)
         db.session.add(data)
         db.session.commit()
@@ -59,5 +58,5 @@ class ProductPriceManager:
     @staticmethod
     def get_discounts():
         date = datetime.now().date()
-        discount_items = ProductDetailsModel.query.filter(ProductDetailsModel.discount_end_date>date).all()
+        discount_items = ProductDetailsModel.query.filter(ProductDetailsModel.discount_end_date > date).all()
         return discount_items

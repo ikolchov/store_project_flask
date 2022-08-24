@@ -10,18 +10,20 @@ from utils.decorators import validate_schema, user_required
 
 class ProductReviewResource(Resource):
 
-    @validate_schema(ProductReviewSchema)
     @auth.login_required
     @user_required()
+    @validate_schema(ProductReviewSchema)
+
     def put(self, id):
         data = request.get_json()
         review = ProductReviewManager.add_review(data, id)
 
         return ProductReviewResponseSchema().dump(review), 201
 
-    @validate_schema(ProductReviewResults)
     @auth.login_required
     @user_required()
+    @validate_schema(ProductReviewResults)
+
     def get(self, id):
         data = request.get_json()
         resp = ProductReviewManager.get_top_comments(id, data["top"])

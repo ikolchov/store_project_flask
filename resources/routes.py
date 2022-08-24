@@ -10,17 +10,18 @@ from resources.store_products import StoreProductResource, StorePriceResource
 #from resources.tester import SendMail
 
 routes = (
+
     (RegisterResource, '/register/'),
     (LoginResource, '/login/'),
     (EmployeeRegisterResource, '/administration/'),
     (EmployeeLoginResource, '/employee_login/'),
     (ChangePasswordResource, '/change_password/'),
     (StoreProductResource, '/store_data_platform/'),
-    (ProductReviewResource, '/product_review/<int:id>'),
+    (ProductReviewResource, '/product_review/<int:id>/'),
     (StorePriceResource, '/administration/price/'),
     (PurchaseProductResource, '/purchase_products/'),
-    (ExportDataResource, '/report/')
-    #exporter
+    (ExportDataResource, '/administration/report/')
+    # cart + main page
    # (SendMail, '/mail/')
 
 

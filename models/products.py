@@ -34,7 +34,7 @@ class ProductDetailsModel(db.Model):
     item_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
     discount = db.Column(db.Float, default=0)
     discount_start_date = db.Column(db.Date, server_default=func.now())
-    discount_end_date = db.Column(db.Date, db.Constraint('discount_end_date'>discount_start_date))  # add some req
+    discount_end_date = db.Column(db.Date, nullable = False)  # add some req
 
 
 class ProductReviewsModel(db.Model):

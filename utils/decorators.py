@@ -25,7 +25,7 @@ def permission_required(roles: List[EmployeeRoles]):
         def wrapper(*args, **kwargs):
             current_user = auth.current_user()
             if not current_user.__class__.__name__ == "EmployeeModel":
-                raise Forbidden("You are consumer this is not available for you!")
+                raise Forbidden("You are a customer this is not available for you!")
             if current_user.user_role not in roles:
                 raise Forbidden("You don`t have permissions")  # fix
             return func(*args, **kwargs)

@@ -61,12 +61,16 @@ class StoreProductResource(Resource):
 
 class StorePriceResource(Resource):
 
+    @auth.login_required
+    @permission_required([EmployeeRoles.manager, EmployeeRoles.owner, EmployeeRoles.senior])
     @validate_schema(ProductPriceSchema)
     def put(self):
         data = request.get_json()
-        item = ProductPriceManager.add_prices(data)
+        item = ProductPriceManager.create_discount(data)
         return ProductDiscountResponseSchema().dump(item)
 
+    @auth.login_required
+    @permission_required([EmployeeRoles.manager, EmployeeRoles.owner, EmployeeRoles.senior, EmployeeRoles.worker])
     def get(self):
         items = ProductPriceManager.get_discounts()
         return ProductDiscountResponseSchema().dump(items, many=True)
