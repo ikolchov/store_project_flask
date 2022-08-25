@@ -83,3 +83,9 @@ Following endpoints are available:
 
 ### Unit testing for a part of the logic is also implemented.
 
+
+### Future changes:
+- more unit tests
+- shopping cart
+- auto exporter of reports
+- fixing some bugs
