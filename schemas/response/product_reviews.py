@@ -12,4 +12,3 @@ class ProductReviewResponseSchema(Schema):
         user = UserModel.query.filter_by(id=obj.author).first()
 
         return f"{user.first_name} {user.last_name}"
-

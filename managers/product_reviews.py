@@ -1,7 +1,6 @@
 from db import db
 from managers.auth import auth
-from models import ProductReviewsModel, product_reviews_relation_table, ProductsModel
-from schemas.response.product_reviews import ProductReviewResponseSchema
+from models import ProductReviewsModel, ProductsModel
 
 
 class ProductReviewManager:
@@ -17,10 +16,11 @@ class ProductReviewManager:
 
     @staticmethod
     def get_top_comments(id, count):
-        reviews = ProductReviewsModel.query.filter_by(item=id).\
-            order_by(ProductReviewsModel.rating.desc()).\
-            order_by(ProductReviewsModel.created_on.desc()).\
-            limit(count).all()
+        reviews = (
+            ProductReviewsModel.query.filter_by(item=id)
+            .order_by(ProductReviewsModel.rating.desc())
+            .order_by(ProductReviewsModel.created_on.desc())
+            .limit(count)
+            .all()
+        )
         return reviews
-
-

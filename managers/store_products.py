@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from flask import jsonify
 from werkzeug.exceptions import BadRequest
 
 from db import db
@@ -9,7 +8,6 @@ from utils.func_helpers import get_new_values
 
 
 class StoreProductManager:
-
     @staticmethod
     def create_product(product):
 
@@ -26,8 +24,10 @@ class StoreProductManager:
     def update(product):
         new_value = product.pop("new_value")
         items = ProductsModel.query.filter_by(**product).all()
-        changed = get_new_values(items, new_value)
-        return "asd"
+        if not items:
+            raise BadRequest("There are no items with this search condition")
+        old, new = get_new_values(items, new_value)
+        return old, new
 
     @staticmethod
     def remove_product(product, employee):
@@ -58,5 +58,7 @@ class ProductPriceManager:
     @staticmethod
     def get_discounts():
         date = datetime.now().date()
-        discount_items = ProductDetailsModel.query.filter(ProductDetailsModel.discount_end_date > date).all()
+        discount_items = ProductDetailsModel.query.filter(
+            ProductDetailsModel.discount_end_date > date
+        ).all()
         return discount_items

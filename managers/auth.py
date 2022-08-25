@@ -4,7 +4,7 @@ import jwt
 from decouple import config
 from flask_httpauth import HTTPTokenAuth
 from jwt import ExpiredSignatureError, InvalidTokenError
-from werkzeug.exceptions import BadRequest, Unauthorized
+from werkzeug.exceptions import Unauthorized
 
 from models import UserModel, EmployeeModel
 
@@ -12,7 +12,11 @@ from models import UserModel, EmployeeModel
 class AuthManager:
     @staticmethod
     def encode_token(user):
-        payload = {"sub": user.id, "exp": datetime.utcnow() + timedelta(days=2), "type": user.__class__.__name__}
+        payload = {
+            "sub": user.id,
+            "exp": datetime.utcnow() + timedelta(days=2),
+            "type": user.__class__.__name__,
+        }
         return jwt.encode(payload, key=config("JWT_SECRET"), algorithm="HS256")
 
     @staticmethod
@@ -20,8 +24,8 @@ class AuthManager:
         if not token:
             raise Unauthorized("Missing token")
         try:
-            payload = jwt.decode(token, key=config('JWT_SECRET'), algorithms=['HS256'])
-            return payload['sub'], payload["type"]
+            payload = jwt.decode(token, key=config("JWT_SECRET"), algorithms=["HS256"])
+            return payload["sub"], payload["type"]
         except ExpiredSignatureError:
             raise Unauthorized("token exp")
         except InvalidTokenError:

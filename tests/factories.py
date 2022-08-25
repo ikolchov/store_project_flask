@@ -19,24 +19,24 @@ class UserModelFactory(BaseFactory):
     class Meta:
         model = UserModel
 
-    id = factory.Sequence(lambda n:n)
-    first_name = factory.Faker('first_name')
-    last_name = factory.Faker('last_name')
-    email = factory.Faker('email')
-    phone = str('1234567890')
-    password = factory.Faker('password')
+    id = factory.Sequence(lambda n: n)
+    first_name = factory.Faker("first_name")
+    last_name = factory.Faker("last_name")
+    email = factory.Faker("email")
+    phone = str(randint(1000000000, 2000000000))
+    password = factory.Faker("password")
 
 
 class EmployeeModelFactory(BaseFactory):
     class Meta:
         model = EmployeeModel
 
-    id = factory.Sequence(lambda n:n)
-    username = factory.Faker('first_name')
-    first_name = factory.Faker('first_name')
-    mid_name = factory.Faker('first_name')
-    last_name = factory.Faker('last_name')
+    id = factory.Sequence(lambda n: n)
+    username = factory.Faker("first_name")
+    first_name = factory.Faker("first_name")
+    mid_name = factory.Faker("first_name")
+    last_name = factory.Faker("last_name")
     user_role = EmployeeRoles.worker
-    email = factory.Faker('email')
+    email = factory.Faker("email")
     phone = str(randint(1000000000, 2000000000))
-    password = factory.Faker('password')
+    password = factory.Faker("password")

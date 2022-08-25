@@ -24,7 +24,8 @@ class GroupModel(db.Model):
     groups = db.Column(db.Enum(ProductGroups))
 
 
-
 class EmployeeProductGroups(db.Model):
-    username = db.Column(db.String, db.ForeignKey("employees.username"), primary_key=True)
+    username = db.Column(
+        db.String, db.ForeignKey("employees.username"), primary_key=True
+    )
     user_groups = db.Column(db.Integer, db.ForeignKey("groups.id"), primary_key=True)

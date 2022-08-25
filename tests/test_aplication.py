@@ -1,5 +1,3 @@
-import json
-
 from flask_testing import TestCase
 
 from config import create_app
@@ -11,31 +9,30 @@ from tests.test_func_helpers import generate_token
 ENDPOINTS_DATA = {
     # '/register/': ['post'], - no login req
     # '/login/': ['post'], - no login req
-    '/administration/': ['post', 'put'],
+    "/administration/": ["post", "put"],
     # '/employee_login/': ['post'], - no login req
     # '/change_password/': ['put', 'get'], - no login req
-    '/store_data_platform/': ['put', 'get', 'delete', 'patch'],
-    '/product_review/1/': ['put', 'get'],
-    '/administration/price/': ['put', 'get'],
-    '/purchase_products/': ['get'],
-    '/administration/report/': ['get']
+    "/store_data_platform/": ["put", "get", "delete", "patch"],
+    "/product_review/1/": ["put", "get"],
+    "/administration/price/": ["put", "get"],
+    "/purchase_products/": ["get"],
+    "/administration/report/": ["get"],
 }
 
 EMPLOYEE_ENDPOINTS_DATA = {
-    '/administration/': ['post', 'put'],
-    '/store_data_platform/': ['put', 'get', 'delete', 'patch'],
-    '/administration/price/': ['put', 'get'],
-    '/administration/report/': ['get']
+    "/administration/": ["post", "put"],
+    "/store_data_platform/": ["put", "get", "delete", "patch"],
+    "/administration/price/": ["put", "get"],
+    "/administration/report/": ["get"],
 }
 
 USER_ENDPOINTS_DATA = {
-    '/product_review/1/': ['put', 'get'],
-    '/purchase_products/': ['get'],
+    "/product_review/1/": ["put", "get"],
+    "/purchase_products/": ["get"],
 }
 
 
 class TestApp(TestCase):
-
     def create_app(self):
         return create_app("config.TestConfig")
 
@@ -59,7 +56,7 @@ class TestApp(TestCase):
 
     def test_login_required(self):
         self.iterate_endpoints(
-            ENDPOINTS_DATA, self.assert_401, {'message': "Missing token"}
+            ENDPOINTS_DATA, self.assert_401, {"message": "Missing token"}
         )
 
     def test_invalid_token(self):
@@ -70,11 +67,14 @@ class TestApp(TestCase):
 
     def test_user_logging_in_admin_part(self):
         user = UserModelFactory()
+
         token = generate_token(user)
         headers = {"Authorization": f"Bearer {token}"}
         self.iterate_endpoints(
-            EMPLOYEE_ENDPOINTS_DATA, self.assert_403, {"message": "You are a customer this is not available for you!"},
-            headers
+            EMPLOYEE_ENDPOINTS_DATA,
+            self.assert_403,
+            {"message": "You are a customer this is not available for you!"},
+            headers,
         )
 
     def test_employee_logging_in_user_part(self):
@@ -82,8 +82,10 @@ class TestApp(TestCase):
         token = generate_token(employee)
         headers = {"Authorization": f"Bearer {token}"}
         self.iterate_endpoints(
-            USER_ENDPOINTS_DATA, self.assert_403, {'message': "You are employee this is not available for you!"},
-            headers
+            USER_ENDPOINTS_DATA,
+            self.assert_403,
+            {"message": "You are employee this is not available for you!"},
+            headers,
         )
 
     def test_only_owner_can_get_reports(self):
@@ -94,5 +96,5 @@ class TestApp(TestCase):
             employee.user_role = role
             token = generate_token(employee)
             headers = {"Authorization": f"Bearer {token}"}
-            resp = self.client.get('/administration/report/', headers=headers)
+            resp = self.client.get("/administration/report/", headers=headers)
             self.assert_403(resp)

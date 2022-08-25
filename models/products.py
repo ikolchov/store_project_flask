@@ -1,12 +1,12 @@
-from db import db
 from sqlalchemy import func
 
+from db import db
 from models.enums import ProductGroups, ProductStatus
 
 product_reviews_relation_table = db.Table(
-    'product_reviews_relation_table',
-    db.Column('item_id', db.Integer, db.ForeignKey("products.id")),
-    db.Column('comment_id', db.Integer, db.ForeignKey('product_reviews.id'))
+    "product_reviews_relation_table",
+    db.Column("item_id", db.Integer, db.ForeignKey("products.id")),
+    db.Column("comment_id", db.Integer, db.ForeignKey("product_reviews.id")),
 )
 
 
@@ -19,22 +19,26 @@ class ProductsModel(db.Model):
     model = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
     price = db.Column(db.Float, nullable=False)
-    sku = db.Column(db.Integer, nullable=False)
-    status = db.Column(db.Enum(ProductStatus), nullable=False, default=ProductStatus.active)
+    sku = db.Column(db.Integer, nullable=False, unique=True)
+    status = db.Column(
+        db.Enum(ProductStatus), nullable=False, default=ProductStatus.active
+    )
     created_on = db.Column(db.DateTime, nullable=False, server_default=func.now())
     modified_on = db.Column(db.DateTime, onupdate=func.now())
     modified_by = db.Column(db.Integer, db.ForeignKey("employees.id"), nullable=False)
-    reviews = db.relationship("ProductReviewsModel", secondary=product_reviews_relation_table)
+    reviews = db.relationship(
+        "ProductReviewsModel", secondary=product_reviews_relation_table
+    )
 
 
 class ProductDetailsModel(db.Model):
     __tablename__ = "product_details"
 
     id = db.Column(db.Integer, primary_key=True)
-    item_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    item_id = db.Column(db.Integer, db.ForeignKey("products.id"), nullable=False)
     discount = db.Column(db.Float, default=0)
     discount_start_date = db.Column(db.Date, server_default=func.now())
-    discount_end_date = db.Column(db.Date, nullable = False)  # add some req
+    discount_end_date = db.Column(db.Date, nullable=False)  # add some req
 
 
 class ProductReviewsModel(db.Model):

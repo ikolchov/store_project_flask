@@ -15,5 +15,5 @@ class ChangePasswordResource(Resource):
     @validate_schema(ResetPasswordSchema)
     def get(self):
         data = request.get_json()
-        PasswordManager.reset_password(data)
-        #TODO fix
+        resp = PasswordManager.reset_password(data)
+        return resp

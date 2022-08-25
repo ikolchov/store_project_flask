@@ -32,7 +32,7 @@ class TestCreateEmployee(TestCase):
             token = generate_token(employee)
             headers = {
                 "Authorization": f"Bearer {token}",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             }
 
             data = {}
@@ -44,14 +44,12 @@ class TestCreateEmployee(TestCase):
                 "email": info,
                 "last_name": info,
                 "first_name": info,
-                "mid_name": info
+                "mid_name": info,
             }
         employee = EmployeeModel.query.all()
         assert len(employee) == 1
 
-
-
-    def test_change_employee_change_groups(self):
+    def test_change_employee_groups(self):
         employee = EmployeeModel.query.all()
         assert len(employee) == 0
 
@@ -62,17 +60,13 @@ class TestCreateEmployee(TestCase):
             token = generate_token(employee)
             headers = {
                 "Authorization": f"Bearer {token}",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             }
 
             data = {}
             resp = self.client.put(self.URL, headers=headers, json=data)
             self.assert_400(resp)
             info = ["Missing data for required field."]
-            assert resp.json["message"] == {
-                "username": info,
-                "user_groups": info,
-            }
+            assert resp.json["message"] == {"username": info}
         employee = EmployeeModel.query.all()
         assert len(employee) == 1
-

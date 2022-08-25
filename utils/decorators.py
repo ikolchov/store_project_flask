@@ -4,7 +4,7 @@ from flask import request
 from werkzeug.exceptions import BadRequest, Forbidden
 
 from managers.auth import auth
-from models import EmployeeProductGroups, EmployeeRoles
+from models import EmployeeRoles
 
 
 def validate_schema(schema_name):
@@ -16,7 +16,9 @@ def validate_schema(schema_name):
             if not errors:
                 return func(*args, **kwargs)
             raise BadRequest(errors)
+
         return wrapper
+
     return decorated_func
 
 
@@ -35,7 +37,6 @@ def permission_required(roles: List[EmployeeRoles]):
     return decorated_func
 
 
-
 def user_required():
     def decorated_func(func):
         def wrapper(*args, **kwargs):
@@ -47,4 +48,3 @@ def user_required():
         return wrapper
 
     return decorated_func
-

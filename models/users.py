@@ -1,5 +1,6 @@
-from db import db
 from sqlalchemy import func
+
+from db import db
 from models.products import ProductsModel
 
 
@@ -24,4 +25,3 @@ class UserProductsLogger(db.Model):
     price = db.Column(db.Float, nullable=False)
     qty = db.Column(db.Integer, nullable=False)
     discount = db.Column(db.Float, default=0, nullable=False)
-

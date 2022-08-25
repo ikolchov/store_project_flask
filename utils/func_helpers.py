@@ -39,14 +39,21 @@ def get_user_name(first, last):
 
 
 def get_new_values(items, new_value):
+    old_values = {}
+    updated_values = {}
     for item in items:
         for k, v in new_value.items():
+            old_values[k] = eval(f"item.{k}")
             setattr(item, k, v)
+            updated_values[k] = eval(f"item.{k}")
+    return old_values, updated_values
 
 
 def check_permissions(pg, user):
     emp_pg = GroupModel.query.filter_by(groups=pg["product_group"]).first()
-    perm = EmployeeProductGroups.query.filter_by(username=user.username, user_groups=emp_pg.id).first()
+    perm = EmployeeProductGroups.query.filter_by(
+        username=user.username, user_groups=emp_pg.id
+    ).first()
     if not perm:
         raise Forbidden("you don`t have permissions")
     return True
@@ -58,12 +65,12 @@ def get_password():
     return hash_password, generated_password
 
 
-def send_mail_credentials(user, pw):
-    msg = Message("Your user has been created", sender=f"{config('MAIL_USERNAME')}", recipients=[f"{user.email}"])
-    msg.body = f"Your username is {user.username}" \
-               f"Your current password is- {pw}. Please login and change it!"
+def send_mail_credentials(user, pw, subject, body):
+    msg = Message(
+        subject, sender=f"{config('MAIL_USERNAME')}", recipients=[f"{user.email}"]
+    )
+    msg.body = body
     mail.send(msg)
-    a = 5
 
 
 def get_user(data):
@@ -77,13 +84,10 @@ def get_user(data):
 
 
 def get_filename_generator(data):
-
     for k, v in data.items():
-        data[k] = datetime.datetime.strptime(v, '%Y-%m-%d').strftime('%Y%m%d')
-    data['unique_ext'] = uuid.uuid4()
+        data[k] = datetime.datetime.strptime(v, "%Y-%m-%d").strftime("%Y%m%d")
+    data["unique_ext"] = uuid.uuid4()
 
     file_name = f"{data['start_date']}_{data['end_date']}_{data['unique_ext']}.xlsx"
-    temp_dir = r'.\service_dropbox\temp_file_dir' + file_name
+    temp_dir = r".\service_dropbox\temp_file_dir" + file_name
     return file_name, temp_dir
-
-

@@ -6,8 +6,8 @@ from flask_restful import Api
 
 from db import db
 from mail import mail
-
 from resources.routes import routes
+
 
 #
 # class ProductionConfig:
@@ -52,14 +52,11 @@ class TestConfig:
     MAIL_USE_SSL = False
 
 
-
-
-
 def create_app(config="config.DevelopmentConfig"):
     app = Flask(__name__)
     db.init_app(app)
     app.config.from_object(config)
-
+    mail.init_app(app)
     migrate = Migrate(app, db)
     CORS(app)
     api = Api(app)
